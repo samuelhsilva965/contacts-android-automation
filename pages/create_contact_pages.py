@@ -97,7 +97,7 @@ class CreateContactPage:
     def fill_input_first_name(self, value: str):
         field = self.get_input_first_name()
         field.click()
-        field.clear()
+        #field.clear()
         field.send_keys(value)
 
     def get_input_last_name(self):
@@ -113,7 +113,7 @@ class CreateContactPage:
     def fill_input_last_name(self, value: str):
         field = self.get_input_last_name()
         field.click()
-        field.clear()
+        #field.clear()
         field.send_keys(value)
 
     def get_btn_expand_name_fields(self):
@@ -148,7 +148,7 @@ class CreateContactPage:
     def fill_input_phone_number(self, value: str):
         field = self.get_input_phone_number()
         field.click()
-        field.clear()
+        #field.clear()
         field.send_keys(value)
 
     def get_element_phone_type_spinner(self):
@@ -190,7 +190,7 @@ class CreateContactPage:
     def fill_input_email(self, value: str):
         field = self.get_input_email()
         field.click()
-        field.clear()
+        #field.clear()
         field.send_keys(value)
 
     def get_element_email_type_spinner(self):
