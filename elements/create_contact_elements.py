@@ -20,6 +20,16 @@ class CreateContactElements:
         "ios": (AppiumBy.ACCESSIBILITY_ID, "SALVAR")
     }
 
+    BTN_CANCEL_DIALOG = {
+        "android": (AppiumBy.ID, "android:id/button2"),
+        "ios": (AppiumBy.ACCESSIBILITY_ID, "Cancelar")  # Ajuste conforme o padrão do iOS se aplicável
+    }
+
+    BTN_DISCARD_DIALOG = {
+        "android": (AppiumBy.ID, "android:id/button1"),
+        "ios": (AppiumBy.ACCESSIBILITY_ID, "Descartar")  # Ajuste conforme o padrão do iOS se aplicável
+    }
+
     # ── Foto do contato ───────────────────────────────────────────────────────
 
     BTN_ADD_CONTACT_PHOTO = {

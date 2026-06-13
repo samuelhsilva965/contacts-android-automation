@@ -4,8 +4,6 @@ from utils.validations.validations_home_not_contact import ValidationHomeNotCont
 class TestHomeContact:
 
     def test_empty_home_screen_elements(self, driver, home_page: ContactsPage, validator_home_empaty: ValidationHomeNotContact):
-
         validator_home_empaty.validate_home_not_contact()
-        home_page.click_btn_create_new_contact()
 
     

@@ -40,6 +40,17 @@ class CreateContactPage:
     def click_btn_save(self):
         self.get_btn_save().click()
 
+    def get_btn_cancel_dialog(self):
+        return self.wait.until(EC.visibility_of_element_located(self.elements.BTN_CANCEL_DIALOG[self.platform]))
+    def click_btn_cancel_dialog(self):
+        self.get_btn_cancel_dialog().click()
+        
+    def get_btn_discard_dialog(self):
+        return self.wait.until(EC.visibility_of_element_located(self.elements.BTN_DISCARD_DIALOG[self.platform]))
+
+    def click_btn_discard_dialog(self):
+        self.get_btn_discard_dialog().click()
+
     # ── Foto do contato ───────────────────────────────────────────────────────
 
     def get_btn_add_contact_photo(self):
@@ -260,3 +271,5 @@ class CreateContactPage:
     def get_email_type_text(self) -> str:
         """Retorna o tipo de e-mail atualmente selecionado no spinner."""
         return self.get_text_email_type_selected().text
+    
+    
