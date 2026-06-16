@@ -1,5 +1,6 @@
 from pages.home_pages import ContactsPage
 
+
 class ValidationHomeNotContact:
 
     def __init__(self, driver, timeout=5):

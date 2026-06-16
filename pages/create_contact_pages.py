@@ -42,9 +42,10 @@ class CreateContactPage:
 
     def get_btn_cancel_dialog(self):
         return self.wait.until(EC.visibility_of_element_located(self.elements.BTN_CANCEL_DIALOG[self.platform]))
+
     def click_btn_cancel_dialog(self):
         self.get_btn_cancel_dialog().click()
-        
+
     def get_btn_discard_dialog(self):
         return self.wait.until(EC.visibility_of_element_located(self.elements.BTN_DISCARD_DIALOG[self.platform]))
 
@@ -108,7 +109,7 @@ class CreateContactPage:
     def fill_input_first_name(self, value: str):
         field = self.get_input_first_name()
         field.click()
-        #field.clear()
+        # field.clear()
         field.send_keys(value)
 
     def get_input_last_name(self):
@@ -124,7 +125,7 @@ class CreateContactPage:
     def fill_input_last_name(self, value: str):
         field = self.get_input_last_name()
         field.click()
-        #field.clear()
+        # field.clear()
         field.send_keys(value)
 
     def get_btn_expand_name_fields(self):
@@ -159,7 +160,7 @@ class CreateContactPage:
     def fill_input_phone_number(self, value: str):
         field = self.get_input_phone_number()
         field.click()
-        #field.clear()
+        # field.clear()
         field.send_keys(value)
 
     def get_element_phone_type_spinner(self):
@@ -172,12 +173,52 @@ class CreateContactPage:
     def click_element_phone_type_spinner(self):
         self.get_element_phone_type_spinner().click()
 
+    def get_phone_type_selected(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(
+                self.elements.PHONE_TYPE_SELECTED[self.platform]
+            )
+        )
+
     def get_text_phone_type_selected(self):
         return self.wait.until(
             EC.visibility_of_element_located(
-                self.elements.TEXT_PHONE_TYPE_SELECTED[self.platform]
+                self.elements.TXT_CURRENT_PHONE_TYPE[self.platform]
             )
         )
+
+    def click_phone_type_selected(self):
+        self.get_phone_type_selected().click()
+
+    def get_opt_mobile(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(
+                self.elements.OPT_TYPE_MOBILE[self.platform]
+            )
+        )
+
+    def get_opt_home(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(
+                self.elements.OPT_TYPE_HOME[self.platform]
+            )
+        )
+
+    def get_opt_work(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(
+                self.elements.OPT_TYPE_WORK[self.platform]
+            )
+        )
+
+    def click_opt_mobile(self):
+        self.get_opt_mobile().click()
+
+    def click_opt_home(self):
+        self.get_opt_home().click()
+
+    def click_opt_work(self):
+        self.get_opt_work().click()
 
     # ── Campos de e-mail ──────────────────────────────────────────────────────
 
@@ -201,7 +242,7 @@ class CreateContactPage:
     def fill_input_email(self, value: str):
         field = self.get_input_email()
         field.click()
-        #field.clear()
+        # field.clear()
         field.send_keys(value)
 
     def get_element_email_type_spinner(self):
@@ -271,5 +312,3 @@ class CreateContactPage:
     def get_email_type_text(self) -> str:
         """Retorna o tipo de e-mail atualmente selecionado no spinner."""
         return self.get_text_email_type_selected().text
-    
-    

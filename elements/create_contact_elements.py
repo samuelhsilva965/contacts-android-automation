@@ -99,10 +99,30 @@ class CreateContactElements:
         "ios": (AppiumBy.ACCESSIBILITY_ID, "Telefone")
     }
 
-    TEXT_PHONE_TYPE_SELECTED = {
+    PHONE_TYPE_SELECTED = {
         "android": (AppiumBy.XPATH,
-            '//android.widget.Spinner[@content-desc="Telefone"]//android.widget.TextView[@resource-id="android:id/text1"]'),
+            '//android.widget.Spinner[@content-desc="Telefone"]'),
         "ios": (AppiumBy.ACCESSIBILITY_ID, "Celular")
+    }
+
+    TXT_CURRENT_PHONE_TYPE = {
+        "android": (AppiumBy.XPATH, '//android.widget.Spinner[@content-desc="Telefone"]/android.widget.TextView[@resource-id="android:id/text1"]'),
+        "ios": (AppiumBy.ACCESSIBILITY_ID, "Mudar se houver equivalente")
+    }
+
+    OPT_TYPE_MOBILE = {
+        "android": (AppiumBy.XPATH, '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Celular"]'),
+        "ios": (AppiumBy.ACCESSIBILITY_ID, "Celular")  # Ajuste se houver equivalência no iOS
+    }
+
+    OPT_TYPE_HOME = {
+        "android": (AppiumBy.XPATH, '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Casa"]'),
+        "ios": (AppiumBy.ACCESSIBILITY_ID, "Casa")
+    }
+
+    OPT_TYPE_WORK = {
+        "android": (AppiumBy.XPATH, '//android.widget.CheckedTextView[@resource-id="android:id/text1" and @text="Comercial"]'),
+        "ios": (AppiumBy.ACCESSIBILITY_ID, "Comercial")
     }
 
     # ── Campos de e-mail ──────────────────────────────────────────────────────
