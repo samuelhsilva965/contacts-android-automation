@@ -4,6 +4,7 @@ import time
 from pages.create_contact_pages import CreateContactPage
 from pages.home_with_contact_page import HomeWithContactPage
 from pages.contact_detail_page import ContactDetailPage
+from utils.functions.back import back
 
 
 class TestUpdateContact:
@@ -18,8 +19,8 @@ class TestUpdateContact:
         """
         Adicionar sobrenome a um contato que possui apenas nome.
 
-        Cenário: Usuário edita o contato "Maria" e adiciona o sobrenome "Silva".
-        Resultado esperado: O contato é exibido como "Maria Silva" na lista de contatos.
+        Cenário: Usuário edita o contato "Maria" e adiciona o sobrenome "Oliveira".
+        Resultado esperado: O contato é exibido como "Maria Oliveira" na lista de contatos.
         """
 
         with allure.step("Abrir o contato 'Maria' e tocar no ícone de editar"):
@@ -32,14 +33,14 @@ class TestUpdateContact:
             time.sleep(1)
 
         with allure.step("Voltar para a lista de contatos e verificar o resultado"):
-            driver.back()
+            back(driver,delay=1)
             remaining_contacts = home_with_contact.get_all_contact_names()
             assert "Maria" not in remaining_contacts, (
                 f"O contato 'Maria' ainda aparece na lista sem sobrenome: {remaining_contacts}"
             )
 
-            assert "Maria Silva" in remaining_contacts, (
-                f"O contato 'Maria Silva' não foi encontrado na lista: {remaining_contacts}"
+            assert "Maria Oliveira" in remaining_contacts, (
+                f"O contato 'Maria Oliveira' não foi encontrado na lista: {remaining_contacts}"
             )
 
     @allure.feature("Atualizar Contato")
@@ -104,7 +105,7 @@ class TestUpdateContact:
             assert email_exibido == email_valido, \
                 f"E-mail exibido ('{email_exibido}') é diferente do esperado ('{email_valido}')"
             
-            driver.back()
+            back(driver, delay=1)
 
     @allure.feature("Atualizar Contato")
     @allure.story("Adicionar nome a contato com apenas e-mail")
@@ -132,7 +133,7 @@ class TestUpdateContact:
 
         with allure.step("Aguardar, voltar para lista e verificar o nome"):
             time.sleep(2)
-            driver.back()
+            back(driver, delay=1)
             remaining_contacts = home_with_contact.get_all_contact_names()
             assert nome_informado in remaining_contacts, f"Contato '{nome_informado}' não encontrado na lista: {remaining_contacts}"
 
@@ -162,7 +163,7 @@ class TestUpdateContact:
             time.sleep(1)
 
         with allure.step("Voltar para lista e verificar o nome"):
-            driver.back()
+            back(driver, delay=1)
             remaining_contacts = home_with_contact.get_all_contact_names()
             assert "Samuel Teste" in remaining_contacts, \
                 f"O nome 'Samuel Teste' não foi encontrado na lista de contatos: {remaining_contacts}"
@@ -197,7 +198,7 @@ class TestUpdateContact:
             time.sleep(1)
 
         with allure.step("Voltar para lista e verificar se 'Ana Silva' está presente"):
-            driver.back()
+            back(driver, delay=1)
             remaining_contacts = home_with_contact.get_all_contact_names()
             assert "Ana Silva" in remaining_contacts, \
                 f"O contato 'Ana Silva' não foi encontrado na lista. Contatos atuais: {remaining_contacts}"
@@ -226,7 +227,7 @@ class TestUpdateContact:
             time.sleep(1)
 
         with allure.step("Voltar para lista e verificar se 'Ana Villalobos' está presente"):
-            driver.back()
+            back(driver, delay=1)
             remaining_contacts = home_with_contact.get_all_contact_names()
             assert "Ana Villalobos" in remaining_contacts, f"Contato 'Ana Villalobos' não encontrado na lista: {remaining_contacts}"
 
@@ -258,4 +259,4 @@ class TestUpdateContact:
             telefone_exibido = new_contact_detail.get_text_phone_number().text
             assert "+55 11 98765-4321" in telefone_exibido, f"Telefone esperado '{novo_telefone}' não encontrado em '{telefone_exibido}'"
 
-            driver.back()
+            back(driver, delay=1)

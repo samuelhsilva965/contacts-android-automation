@@ -1,6 +1,4 @@
 import allure
-
-from pages.home_pages import ContactsPage
 from utils.validations.validations_home_not_contact import ValidationHomeNotContact
 
 

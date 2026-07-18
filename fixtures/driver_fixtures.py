@@ -16,6 +16,8 @@ def driver():
             "appium:udid": "emulator-5554",
             "appium:appPackage": "com.android.contacts",
             "appium:appActivity": "com.android.contacts.activities.PeopleActivity",
+            "appium:language": "pt",
+            "appium:locale": "BR",
             "appium:noReset": True
         }
 
