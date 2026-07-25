@@ -19,6 +19,9 @@ env:
   ANDROID_PROFILE: pixel_6
   ANDROID_AVD_NAME: contacts_pt_br
 
+permissions:
+  contents: write
+
 jobs:
   appium-android-tests:
     runs-on: ubuntu-latest
@@ -122,9 +125,30 @@ jobs:
             APPIUM_PID=$!
             sleep 10
 
-            pytest ${{ github.event.inputs.test_path || 'tests/' }} --junitxml=results.xml -v
+            pytest ${{ github.event.inputs.test_path || 'tests/' }} --junitxml=results.xml --alluredir=allure-results -v
             TEST_EXIT_CODE=$?
 
             kill $APPIUM_PID || true
 
             exit $TEST_EXIT_CODE
+
+      - name: Instalar Allure CLI
+        if: always()
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jre
+          curl -o allure-2.29.0.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
+          tar -zxvf allure-2.29.0.tgz -C /opt/
+          sudo ln -s /opt/allure-2.29.0/bin/allure /usr/bin/allure
+
+      - name: Gerar relatório Allure
+        if: always()
+        run: allure generate allure-results -o allure-report --clean
+
+      - name: Publicar relatório no GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          publish_branch: gh-pages
