@@ -10,7 +10,7 @@ from utils.validations.validations_home_not_contact import ValidationHomeNotCont
 
 class TestDeleteContact:
 
-    @allure.feature("Delete Contact")
+    @allure.feature("Excluir Contato")
     @allure.story("Ícone de lixeira não visível sem seleção")
     @allure.title("Verificar que o ícone de lixeira não está visível sem seleção")
     @allure.severity(allure.severity_level.NORMAL)
@@ -24,7 +24,7 @@ class TestDeleteContact:
         with allure.step("Verificar que o ícone de lixeira não está visível sem nenhum contato selecionado"):
             assert not home_with_contact.is_btn_delete_visible(), "O botão de exclusão está visível sem nenhum contato selecionado"
 
-    @allure.feature("Delete Contact")
+    @allure.feature("Excluir Contato")
     @allure.story("Desmarcar seleção e cancelar modo de seleção múltipla")
     @allure.title("Desmarcar seleção e cancelar modo de seleção múltipla")
     @allure.severity(allure.severity_level.NORMAL)
@@ -51,7 +51,7 @@ class TestDeleteContact:
             assert not home_with_contact.is_btn_delete_visible(), "O botão de exclusão ainda está visível"
             assert home_page.get_text_toolbar_title().text == "Contatos", "O título da barra de ferramentas não está correto"
 
-    @allure.feature("Delete Contact")
+    @allure.feature("Excluir Contato")
     @allure.story("Atualizar contador de seleção")
     @allure.title("Verificar atualização do contador ao selecionar e desselecionar contatos")
     @allure.severity(allure.severity_level.NORMAL)
@@ -79,7 +79,7 @@ class TestDeleteContact:
             assert selection_count == "1", f"Esperado '1' mas obteve '{selection_count}'"
             home_with_contact.click_btn_close_selection()
 
-    @allure.feature("Delete Contact")
+    @allure.feature("Excluir Contato")
     @allure.story("Cancelar exclusão de contato")
     @allure.title("Cancelar exclusão de contato e verificar que não foi removido")
     @allure.severity(allure.severity_level.NORMAL)
@@ -101,7 +101,7 @@ class TestDeleteContact:
             assert home_with_contact.get_selection_count_value() == "1", "A seleção não foi mantida"
             home_with_contact.click_btn_close_selection()
 
-    @allure.feature("Delete Contact")
+    @allure.feature("Excluir Contato")
     @allure.story("Confirmar exclusão de contato")
     @allure.title("Confirmar exclusão de contato e verificar remoção")
     @allure.severity(allure.severity_level.NORMAL)
@@ -131,7 +131,7 @@ class TestDeleteContact:
             for name in ["Maria Editada"]:
                 assert name not in remaining_contacts, f"Contato '{name}' ainda está presente na lista: {remaining_contacts}"
 
-    @allure.feature("Delete Contact")
+    @allure.feature("Excluir Contato")
     @allure.story("Selecionar e excluir múltiplos contatos em lote")
     @allure.title("Selecionar múltiplos contatos e excluir em lote")
     @allure.severity(allure.severity_level.NORMAL)
@@ -170,7 +170,7 @@ class TestDeleteContact:
                     remaining_contacts = home_with_contact.get_all_contact_names()
                 assert name not in remaining_contacts, f"Contato '{name}' ainda está presente na lista: {remaining_contacts}"
 
-    @allure.feature("Delete Contact")
+    @allure.feature("Excluir Contato")
     @allure.story("Excluir contato da tela de detalhes com cancelamento")
     @allure.title("Excluir contato da tela de detalhes e cancelar a exclusão")
     @allure.severity(allure.severity_level.NORMAL)
@@ -202,7 +202,7 @@ class TestDeleteContact:
             remaining_contacts = home_with_contact.get_all_contact_names()
             assert "Ana Villalobos" in remaining_contacts, f"Contato 'Ana Villalobos' foi removido"
 
-    @allure.feature("Delete Contact")
+    @allure.feature("Excluir Contato")
     @allure.story("Menu de opções na tela de detalhes")
     @allure.title("Verificar exibição e fechamento do menu de opções na tela de detalhes")
     @allure.severity(allure.severity_level.NORMAL)
@@ -231,7 +231,7 @@ class TestDeleteContact:
         with allure.step("Voltar para a tela de listagem de contatos"):
             driver.back()
 
-    @allure.feature("Delete Contact")
+    @allure.feature("Excluir Contato")
     @allure.story("Excluir contato da tela de detalhes com confirmação")
     @allure.title("Excluir contato da tela de detalhes e verificar remoção")
     @allure.severity(allure.severity_level.NORMAL)
