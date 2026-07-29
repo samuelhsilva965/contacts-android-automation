@@ -83,13 +83,13 @@ jobs:
             adb wait-for-device
             until [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; do echo "Aguardando boot inicial completar..."; sleep 2; done
 
-            # echo "Ajustando locale para pt-BR..."
-            # adb shell settings put system system_locales pt-BR
-            # adb reboot
+            echo "Ajustando locale para pt-BR..."
+            adb shell settings put system system_locales pt-BR
+            adb reboot
 
-            # echo "Aguardando reboot..."
-            # adb wait-for-device
-            # until [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; do echo "Aguardando boot pós-reboot completar..."; sleep 2; done
+            echo "Aguardando reboot..."
+            adb wait-for-device
+            until [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; do echo "Aguardando boot pós-reboot completar..."; sleep 2; done
 
             echo "Locale final gravado no snapshot:"
             adb shell getprop persist.sys.locale
