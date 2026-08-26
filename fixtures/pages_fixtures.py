@@ -20,10 +20,6 @@ def new_contact_detail(driver) -> ContactDetailPage:
     return ContactDetailPage(driver)
 
 @pytest.fixture(scope="session")
-def new_contact_detail(driver) -> ContactDetailPage:
-    return ContactDetailPage(driver)
-
-@pytest.fixture(scope="session")
 def home_with_contact(driver) -> HomeWithContactPage:
     return HomeWithContactPage(driver)
 
