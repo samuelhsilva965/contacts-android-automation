@@ -4,7 +4,7 @@ from utils.validations.validations_home_not_contact import ValidationHomeNotCont
 
 class TestHomeContact:
 
-    @allure.feature("Home Empty")
+    @allure.feature("Home sem contatos")
     @allure.story("Verificar elementos da tela inicial vazia")
     @allure.title("Tela inicial vazia - verificar elementos")
     @allure.severity(allure.severity_level.NORMAL)

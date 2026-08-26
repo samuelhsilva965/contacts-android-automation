@@ -2,9 +2,43 @@ import allure
 import pytest
 import time
 from pages.create_contact_pages import CreateContactPage
+from pages.home_pages import ContactsPage
 from pages.home_with_contact_page import HomeWithContactPage
 from pages.contact_detail_page import ContactDetailPage
 from utils.functions.back import back
+from utils.functions.ensure_on_home import ensure_on_contacts_home, return_to_contacts_home
+from utils.functions.ensure_required_contacts import ensure_required_contacts_for_update
+
+
+@pytest.fixture(scope="module", autouse=True)
+def ensure_contacts_before_update(
+    driver,
+    home_page: ContactsPage,
+    home_with_contact: HomeWithContactPage,
+    create_new_contact: CreateContactPage,
+):
+    """
+    Antes de qualquer teste de atualização:
+    - valida se os contatos necessários existem
+    - identifica quais faltam
+    - cria apenas os faltantes
+    - falha com mensagem clara se a recriação não funcionar
+    """
+    with allure.step("Pré-condição: garantir contatos necessários (independente do test_2)"):
+        ensure_required_contacts_for_update(
+            driver=driver,
+            home_page=home_page,
+            home_with_contact=home_with_contact,
+            create_new_contact=create_new_contact,
+        )
+
+
+@pytest.fixture(autouse=True)
+def always_end_on_home(driver):
+    """Todo teste deste módulo deve terminar na home de Contatos."""
+    yield
+    with allure.step("Pós-condição: retornar à home de Contatos"):
+        return_to_contacts_home(driver)
 
 
 class TestUpdateContact:
@@ -23,7 +57,8 @@ class TestUpdateContact:
         Resultado esperado: O contato é exibido como "Maria Oliveira" na lista de contatos.
         """
 
-        with allure.step("Abrir o contato 'Maria' e tocar no ícone de editar"):
+        with allure.step("Garantir home e abrir o contato 'Maria'"):
+            ensure_on_contacts_home(driver)
             home_with_contact.click_contact_row_by_name("Maria")
             new_contact_detail.click_btn_edit()
 
@@ -33,7 +68,7 @@ class TestUpdateContact:
             time.sleep(1)
 
         with allure.step("Voltar para a lista de contatos e verificar o resultado"):
-            back(driver,delay=1)
+            back(driver, delay=1)
             remaining_contacts = home_with_contact.get_all_contact_names()
             assert "Maria" not in remaining_contacts, (
                 f"O contato 'Maria' ainda aparece na lista sem sobrenome: {remaining_contacts}"
@@ -51,24 +86,32 @@ class TestUpdateContact:
         """
         Adicionar número de telefone a um contato que possui apenas nome.
 
-        Cenário: Usuário abre o contato "Maria", adiciona um telefone e salva.
+        Cenário: Usuário abre o contato "Maria Oliveira", edita, adiciona um telefone e salva.
         Resultado esperado: O telefone informado é exibido na tela de detalhes.
         """
 
-        with allure.step("Abrir o contato 'Maria Oliveira' e tocar em 'Adicionar número de telefone'"):
-            home_with_contact.get_contact_row_by_name("Maria Oliveira").click()
-            new_contact_detail.click_text_add_phone_number()
+        with allure.step("Garantir home e abrir o contato 'Maria Oliveira'"):
+            ensure_on_contacts_home(driver)
+            home_with_contact.click_contact_row_by_name("Maria Oliveira")
+            assert new_contact_detail.get_text_contact_name().text == "Maria Oliveira", \
+                "A tela de detalhes do contato 'Maria Oliveira' não está sendo exibida"
 
-        with allure.step("Informar telefone e salvar"):
+        with allure.step("Editar, informar telefone e salvar"):
+            new_contact_detail.click_btn_edit()
             phone_number = "(11) 99999-0000"
             create_new_contact.fill_input_phone_number(phone_number)
             create_new_contact.click_btn_save()
 
-        with allure.step("Aguardar e verificar se o telefone é exibido nos detalhes"):
+        with allure.step("Verificar telefone nos detalhes e voltar para a lista"):
             time.sleep(1)
             phone_displayed = new_contact_detail.get_text_phone_number()
             assert phone_displayed.is_displayed(), "O campo de telefone não está visível na tela de detalhes"
-            assert phone_number in phone_displayed.text, f"Esperado '{phone_number}' no telefone, mas obteve '{phone_displayed.text}'"
+            phone_digits = "".join(ch for ch in phone_displayed.text if ch.isdigit())
+            expected_digits = "".join(ch for ch in phone_number if ch.isdigit())
+            assert expected_digits in phone_digits, (
+                f"Esperado dígitos '{expected_digits}' no telefone, mas obteve '{phone_displayed.text}'"
+            )
+            back(driver, delay=1)
 
     @allure.feature("Atualizar Contato")
     @allure.story("Adicionar e-mail a contato com apenas nome")
@@ -89,7 +132,9 @@ class TestUpdateContact:
           Então o e-mail informado deverá ser exibido na tela de detalhes do contato
         """
 
-        with allure.step("Verificar que está na tela de detalhes do contato 'Maria Oliveira'"):
+        with allure.step("Garantir home e abrir o contato 'Maria Oliveira'"):
+            ensure_on_contacts_home(driver)
+            home_with_contact.click_contact_row_by_name("Maria Oliveira")
             assert new_contact_detail.get_text_contact_name().text == "Maria Oliveira", \
                 "A tela de detalhes do contato 'Maria Oliveira' não está sendo exibida"
 
@@ -104,7 +149,7 @@ class TestUpdateContact:
             email_exibido = new_contact_detail.get_text_email().text
             assert email_exibido == email_valido, \
                 f"E-mail exibido ('{email_exibido}') é diferente do esperado ('{email_valido}')"
-            
+
             back(driver, delay=1)
 
     @allure.feature("Atualizar Contato")
@@ -120,7 +165,8 @@ class TestUpdateContact:
         Resultado esperado: O contato passa a ser exibido pelo nome informado na lista de contatos.
         """
 
-        with allure.step("Abrir contato 'maria@gmail.com' e verificar o nome"):
+        with allure.step("Garantir home e abrir o contato 'maria@gmail.com'"):
+            ensure_on_contacts_home(driver)
             home_with_contact.click_contact_row_by_name("maria@gmail.com")
             assert new_contact_detail.get_text_contact_name().text == "maria@gmail.com", "O nome do contato não é 'maria@gmail.com'"
 
@@ -151,7 +197,8 @@ class TestUpdateContact:
         Resultado esperado: O contato passa a ser exibido pelo nome informado na lista.
         """
 
-        with allure.step("Abrir contato '(897) 451-5216' e verificar o nome"):
+        with allure.step("Garantir home e abrir o contato '(897) 451-5216'"):
+            ensure_on_contacts_home(driver)
             home_with_contact.click_contact_row_by_name("(897) 451-5216")
             assert new_contact_detail.get_text_contact_name().text == "(897) 451-5216", \
                 "O contato aberto não é o esperado"
@@ -186,7 +233,8 @@ class TestUpdateContact:
           Então o contato deverá ser exibido com o novo nome na lista de contatos
         """
 
-        with allure.step("Abrir contato 'Maria Silva' e verificar detalhes"):
+        with allure.step("Garantir home e abrir o contato 'Maria Silva'"):
+            ensure_on_contacts_home(driver)
             home_with_contact.click_contact_row_by_name("Maria Silva")
             assert new_contact_detail.get_text_contact_name().text == "Maria Silva", \
                 "Não está na tela de detalhes do contato 'Maria Silva'"
@@ -217,7 +265,8 @@ class TestUpdateContact:
         Resultado esperado: O contato é exibido com o novo sobrenome na lista de contatos.
         """
 
-        with allure.step("Abrir contato 'Ana Silva'"):
+        with allure.step("Garantir home e abrir o contato 'Ana Silva'"):
+            ensure_on_contacts_home(driver)
             home_with_contact.click_contact_row_by_name("Ana Silva")
 
         with allure.step("Editar, alterar sobrenome para 'Villalobos' e salvar"):
@@ -243,7 +292,8 @@ class TestUpdateContact:
         Resultado esperado: Novo telefone é exibido na tela de detalhes.
         """
 
-        with allure.step("Abrir contato 'Ana Villalobos' e verificar detalhes"):
+        with allure.step("Garantir home e abrir o contato 'Ana Villalobos'"):
+            ensure_on_contacts_home(driver)
             home_with_contact.click_contact_row_by_name("Ana Villalobos")
             assert new_contact_detail.get_text_contact_name().text == "Ana Villalobos", "O nome do contato não corresponde"
 

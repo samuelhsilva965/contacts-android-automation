@@ -40,7 +40,7 @@ contacts-android-automation/
 │   └── contact_detail_page.py
 │
 ├── utils/
-│   ├── functions/                  # Helpers reutilizáveis (back, click_and_hold, fechar diálogos)
+│   ├── functions/                  # Helpers (back, long-press, home, pré-condições de contatos)
 │   └── validations/                # Classes de validação (assertions agrupadas por contexto)
 │
 ├── fixtures/                       # Fixtures de pytest (driver e page objects)
@@ -64,9 +64,9 @@ contacts-android-automation/
 | **elements/** | Centraliza os localizadores, por plataforma (`android`/`ios`), em dicionários (`{"android": (...), "ios": (...)}`) | Estrutura já preparada para expansão multiplataforma, embora hoje apenas Android seja executado |
 | **pages/** | Encapsula ações (`click_*`, `fill_*`) e getters (`get_*`) sobre os elementos, sem lógica de asserção | Boa prática de POM: Page Objects não devem conter `assert` |
 | **utils/validations/** | Concentra os `assert` de negócio, desacoplando a verificação da interação | Facilita reuso das validações em múltiplos testes e leitura dos casos de teste |
-| **utils/functions/** | Funções auxiliares de baixo nível (long-press, back com delay, fechar diálogo condicional de "adicionar conta") | Reduz duplicação de tratamento de instabilidades de UI |
-| **fixtures/** | Define o `driver` (sessão Appium) e instâncias de Page Objects/Validators com escopo `session` | Sessão única de app por execução — ver seção de riscos abaixo |
-| **tests/** | Casos de teste organizados por fluxo e numerados (`1_home`, `2_create`, `3_update`, `4_delete`) | Numeração indica **dependência sequencial** entre suítes — ver seção de riscos |
+| **utils/functions/** | Helpers de UI e de pré-condição (`ensure_required_contacts`, `ensure_on_home`, long-press, back, fechar diálogo de conta) | Isola setup reutilizável e reduz duplicação entre módulos de teste |
+| **fixtures/** | Define o `driver` (sessão Appium) e instâncias de Page Objects/Validators com escopo `session` | Sessão única de app por execução — ver seção de observações abaixo |
+| **tests/** | Casos de teste organizados por fluxo e numerados (`1_home`, `2_create`, `3_update`, `4_delete`) | Update e delete garantem os próprios contatos via fixtures/helpers; a numeração organiza a suíte, sem impor ordem obrigatória |
 
 ---
 
@@ -86,19 +86,20 @@ contacts-android-automation/
 - Criação com todos os campos preenchidos.
 
 ### `test_3_update_contact.py` — Atualização de contato
+- Fixture de módulo garante os contatos necessários antes da suíte (`ensure_required_contacts_for_update`);
 - Adicionar sobrenome, telefone, e-mail e nome a contatos com dados incompletos;
 - Editar nome, sobrenome e telefone de um contato já completo;
-- Validação da persistência dos dados na lista e na tela de detalhes após cada edição.
+- Validação da persistência dos dados na lista e na tela de detalhes após cada edição;
+- Pós-condição: cada teste retorna à home de Contatos.
 
 ### `test_4_delete_contact.py` — Exclusão de contato
+- Pré-condições criam apenas os contatos usados por cada cenário (`ensure_required_contacts_for_delete`);
 - Ícone de exclusão oculto sem seleção;
 - Seleção via long-press, contador de seleção múltipla, desmarcação e cancelamento do modo de seleção;
 - Cancelar exclusão via diálogo (contato deve permanecer);
 - Confirmar exclusão individual e em lote;
 - Exclusão a partir da tela de detalhes (via menu "Mais opções" → "Excluir"), com fluxo de cancelar e de confirmar;
 - Validação de exibição/fechamento do menu de opções ("Vincular", "Excluir", "Compartilhar", "Criar atalho", "Definir toque").
-
-> ⚠️ **Nota de dependência entre testes:** os arquivos são numerados (`1`, `2`, `3`, `4`) e os testes de atualização/exclusão **reutilizam contatos criados em suítes anteriores** (ex.: `"Maria"`, `"Maria Silva"`, `"maria@gmail.com"`, `"(897) 451-5216"` são originados em `test_2_create_contact.py`). Isso significa que **a suíte não é independente por arquivo** — a execução parcial (ex.: rodar só `test_4`) tende a falhar por pré-condição ausente. Isso deve ser tratado como débito técnico (ver seção "Riscos e recomendações").
 
 ---
 
@@ -170,23 +171,19 @@ Disparado em `push`/`pull_request` para `main`, e também via `workflow_dispatch
 
 ## 🔍 Observações e recomendações de QA
 
-Como revisor(a), destaco os seguintes pontos de atenção para evolução da suíte:
+Pontos de atenção para evolução da suíte:
 
-1. **Independência de testes (isolamento):** os testes de update/delete dependem de estado deixado por testes de create. Recomenda-se migrar para fixtures de setup/teardown (`autouse`) que criem e limpem seus próprios dados, evitando ordem implícita de execução e permitindo paralelização futura.
+1. **Uso de `time.sleep()` fixo:** diversos testes ainda usam `time.sleep(1)`/`time.sleep(2)`/`time.sleep(3)` para aguardar transições de tela ou sincronização de toast. Waits fixos deixam a suíte mais lenta e ainda assim instável. Preferir `WebDriverWait` com `expected_conditions` específicas (ex.: presença do novo elemento, retorno à home).
 
-2. **Uso de `time.sleep()` fixo:** diversos testes usam `time.sleep(1)`/`time.sleep(2)`/`time.sleep(3)` para aguardar transições de tela ou sincronização de toast. Isso é um anti-padrão clássico de automação (waits fixos tornam a suíte lenta e ainda assim instável). Onde possível, substituir por `WebDriverWait` com `expected_conditions` específicas (ex.: invisibilidade do toast anterior, presença do novo elemento).
+2. **Retry / polling de lista:** em exclusão, há esperas com polling para confirmar remoção dos nomes na lista. Essa lógica funciona, mas o ideal é concentrá-la em helpers/Page Objects (como em `get_all_contact_names()` com tratamento de `StaleElementReferenceException`), em vez de espalhar sleeps nos testes.
 
-3. **Retry manual embutido no teste** (`test_select_and_delete_contacts`, em `test_4_delete_contact.py`): há um laço de retry com `time.sleep(3)` dentro do próprio caso de teste para lidar com atraso de re-render da lista. Esse tipo de lógica de retry é mais apropriado na camada de Page Object (como já foi feito, corretamente, em `get_all_contact_names()` com tratamento de `StaleElementReferenceException`) do que espalhado pelos testes.
+3. **Escopo de fixtures `session`:** `driver` e Page Objects usam escopo `session` com `noReset: True` — o app não reinicia entre testes. Isso melhora performance; o estado da agenda é gerenciado pelas pré-condições de update/delete, mas limpeza explícita entre módulos ainda pode ser útil para execuções parciais e paralelização futura.
 
-4. **Validação comentada em `test_delete_contact_from_detail`:** há uma verificação de "home vazia" comentada com a justificativa de comportamento não determinístico observado. Isso é um sinal de **flakiness conhecido e não resolvido** — deveria ser registrado como bug/débito técnico rastreável (ex.: issue no repositório) em vez de permanecer apenas como comentário no código, para não se perder o contexto.
-
-5. **Escopo de fixtures `session`:** `driver`, `home_page`, `create_new_contact`, `new_contact_detail` e `home_with_contact` têm escopo `session`, ou seja, o app não é reiniciado entre testes (`noReset: True`). Isso é adequado para performance, mas reforça o ponto 1 — o estado do app é cumulativo entre todos os testes da sessão.
-
-6. **Cobertura futura sugerida:**
-   - Validação de campos obrigatórios com caracteres especiais/emoji no nome;
+4. **Cobertura futura sugerida:**
+   - Validação com caracteres especiais/emoji no nome;
    - Testes negativos de formato de e-mail/telefone inválidos;
-   - Testes de rotação de tela e app em background/foreground (estado de formulário preservado);
-   - Testes de acessibilidade (TalkBack) para os principais fluxos.
+   - Rotação de tela e app em background/foreground (estado de formulário preservado);
+   - Acessibilidade (TalkBack) nos principais fluxos.
 
 ---
 
