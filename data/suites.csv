@@ -1,184 +1,86 @@
 "Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Wed Jul 29 18:58:23 UTC 2026","Wed Jul 29 18:58:28 UTC 2026","5266","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de e-mail exibe o texto correto","
-        Valida que a seleção dos tipos de e-mail mostra o texto correto na tela,
+"passed","Wed Aug 26 21:12:35 UTC 2026","Wed Aug 26 21:12:41 UTC 2026","6555","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de telefone exibe o texto correto","
+        Valida que a seleção dos tipos de telefone mostra o texto correto na tela,
         utilizando desvios condicionais para cada tipo.
         "
-"passed","Wed Jul 29 18:57:26 UTC 2026","Wed Jul 29 18:57:29 UTC 2026","3108","tests","test_1_home_empety","TestHomeContact","","","Tela inicial vazia - verificar elementos",""
-"passed","Wed Jul 29 18:57:35 UTC 2026","Wed Jul 29 18:57:51 UTC 2026","15812","tests","test_2_create_contact","TestCreateContact","","","Cancelar criação com diálogo de confirmação após preencher campo","
-        Testa o cancelamento da criação com diálogo de confirmação ao ter campos preenchidos.
-
-        Cenário: Usuário preenche o primeiro nome e tenta cancelar, acionando diálogo de confirmação.
-        Resultado esperado: Usuário pode confirmar o cancelamento e nenhum contato é criado.
-        "
-"passed","Wed Jul 29 18:58:28 UTC 2026","Wed Jul 29 18:58:33 UTC 2026","5127","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de e-mail exibe o texto correto","
-        Valida que a seleção dos tipos de e-mail mostra o texto correto na tela,
-        utilizando desvios condicionais para cada tipo.
-        "
-"passed","Wed Jul 29 19:00:37 UTC 2026","Wed Jul 29 19:00:42 UTC 2026","4933","tests","test_4_delete_contact","TestDeleteContact","","","Verificar atualização do contador ao selecionar e desselecionar contatos","
-        Verificar atualização do contador ao selecionar e desselecionar contatos.
-
-        Cenário: Usuário está no modo de seleção múltipla.
-        Resultado esperado: Contador exibe a quantidade correta de contatos selecionados.
-        "
-"passed","Wed Jul 29 19:00:42 UTC 2026","Wed Jul 29 19:00:47 UTC 2026","4585","tests","test_4_delete_contact","TestDeleteContact","","","Cancelar exclusão de contato e verificar que não foi removido",""
-"passed","Wed Jul 29 18:59:52 UTC 2026","Wed Jul 29 19:00:03 UTC 2026","10289","tests","test_3_update_contact","TestUpdateContact","","","Adicionar nome a contato que possui apenas telefone","
-        Adicionar nome a um contato que possui apenas telefone.
-
-        Cenário: Usuário abre o contato '(897) 451-5216', edita, preenche o nome e salva.
-        Resultado esperado: O contato passa a ser exibido pelo nome informado na lista.
-        "
-"passed","Wed Jul 29 18:58:36 UTC 2026","Wed Jul 29 18:58:45 UTC 2026","9135","tests","test_2_create_contact","TestCreateContact","","","Criar contato com dados parciais (parametrizado)","
-        Testa a criação de contato com dados parciais.
-
-        Cenários parametrizados:
-        - Apenas primeiro nome preenchido
-        - Apenas telefone preenchido
-        - Apenas email preenchido
-
-        Resultado esperado: Contato é criado com os dados fornecidos.
-        "
-"passed","Wed Jul 29 19:00:31 UTC 2026","Wed Jul 29 19:00:37 UTC 2026","6004","tests","test_4_delete_contact","TestDeleteContact","","","Desmarcar seleção e cancelar modo de seleção múltipla","
+"passed","Wed Aug 26 21:15:46 UTC 2026","Wed Aug 26 21:16:01 UTC 2026","15754","tests","test_4_delete_contact","TestDeleteContact","","","Desmarcar seleção e cancelar modo de seleção múltipla","
         Desmarcar seleção e cancelar modo de seleção múltipla.
 
         Cenário: Usuário selecionou o contato ""Maria Editada"" na lista.
         Resultado esperado: Contato é desmarcado e modo de seleção múltipla é encerrado.
         "
-"passed","Wed Jul 29 19:00:54 UTC 2026","Wed Jul 29 19:00:59 UTC 2026","5073","tests","test_4_delete_contact","TestDeleteContact","","","Selecionar múltiplos contatos e excluir em lote","
-        Seleciona múltiplos contatos e exclui em lote.
+"passed","Wed Aug 26 21:16:16 UTC 2026","Wed Aug 26 21:16:31 UTC 2026","14619","tests","test_4_delete_contact","TestDeleteContact","","","Cancelar exclusão de contato e verificar que não foi removido","
+        Cancelar a exclusão de um contato selecionado.
 
-        Cenário: Usuário seleciona os contatos ""Maria Oliveira"" e ""Samuel Teste"".
-        Resultado esperado: Contato é criado e validado com sucesso.
+        Cenário: Usuário seleciona ""Maria Editada"", abre o diálogo de exclusão e cancela.
+        Resultado esperado: Contato permanece na lista e a seleção é mantida.
         "
-"passed","Wed Jul 29 19:00:29 UTC 2026","Wed Jul 29 19:00:31 UTC 2026","2092","tests","test_4_delete_contact","TestDeleteContact","","","Verificar que o ícone de lixeira não está visível sem seleção","
-        Verifica que o ícone de lixeira não está visível na barra de ação sem nenhum contato selecionado.
-
-        Cenário: Usuário está na tela de lista de contatos sem nenhum contato selecionado.
-        Resultado esperado: O ícone de lixeira não deve estar visível na barra de ação.
-        "
-"passed","Wed Jul 29 18:57:59 UTC 2026","Wed Jul 29 18:58:05 UTC 2026","6192","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de telefone exibe o texto correto","
-        Valida que a seleção dos tipos de telefone mostra o texto correto na tela,
-        utilizando desvios condicionais para cada tipo.
-        "
-"passed","Wed Jul 29 18:59:01 UTC 2026","Wed Jul 29 18:59:17 UTC 2026","15829","tests","test_2_create_contact","TestCreateContact","","","Criar contato completo com todos os dados","
-        Testa a criação completa de contato com todos os campos preenchidos.
-
-        Cenário: Usuário preenche todos os campos (primeiro nome, sobrenome, telefone e email).
-        Resultado esperado: Contato é criado e validado com sucesso.
-        "
-"passed","Wed Jul 29 18:57:51 UTC 2026","Wed Jul 29 18:57:57 UTC 2026","5884","tests","test_2_create_contact","TestCreateContact","","","Tentar criar contato com formulário vazio resulta em falha","
-        Testa que a criação falha com formulário vazio.
-
-        Cenário: Usuário tenta criar contato sem preencher nenhum campo.
-        Resultado esperado: Falha na validação e nenhum contato é criado.
-        "
-"passed","Wed Jul 29 18:58:54 UTC 2026","Wed Jul 29 18:59:01 UTC 2026","7104","tests","test_2_create_contact","TestCreateContact","","","Criar contato com dados parciais (parametrizado)","
-        Testa a criação de contato com dados parciais.
-
-        Cenários parametrizados:
-        - Apenas primeiro nome preenchido
-        - Apenas telefone preenchido
-        - Apenas email preenchido
-
-        Resultado esperado: Contato é criado com os dados fornecidos.
-        "
-"passed","Wed Jul 29 19:00:59 UTC 2026","Wed Jul 29 19:01:04 UTC 2026","5186","tests","test_4_delete_contact","TestDeleteContact","","","Excluir contato da tela de detalhes e cancelar a exclusão","
-        Excluir um contato a partir da tela de detalhes do contato e cancelar a exclusão.
-
-        Cenário: Usuário está na tela de detalhes do contato ""Ana Villalobos"".
-        Resultado esperado: Contato não é excluído e o usuário permanece na tela de detalhes.
-        "
-"passed","Wed Jul 29 18:57:29 UTC 2026","Wed Jul 29 18:57:35 UTC 2026","5785","tests","test_2_create_contact","TestCreateContact","","","Cancelar criação de contato com formulário vazio retorna à tela inicial","
-        Testa o cancelamento da criação de contato com formulário vazio.
-
-        Cenário: Usuário clica no botão de criar contato e depois cancela sem preencher nenhum campo.
-        Resultado esperado: Retorna à tela inicial e nenhum contato é criado.
-        "
-"passed","Wed Jul 29 18:59:17 UTC 2026","Wed Jul 29 18:59:26 UTC 2026","9680","tests","test_3_update_contact","TestUpdateContact","","","Adicionar sobrenome a contato que possui apenas nome","
-        Adicionar sobrenome a um contato que possui apenas nome.
-
-        Cenário: Usuário edita o contato ""Maria"" e adiciona o sobrenome ""Oliveira"".
-        Resultado esperado: O contato é exibido como ""Maria Oliveira"" na lista de contatos.
-        "
-"passed","Wed Jul 29 18:59:35 UTC 2026","Wed Jul 29 18:59:42 UTC 2026","6971","tests","test_3_update_contact","TestUpdateContact","","","Adicionar e-mail a contato que possui apenas nome","
-        Adicionar e-mail a um contato que possui apenas nome.
-
-        Cenário:
-          Dado que o usuário está no contato ""Maria""
-          Quando tocar em ""Editar""
-          E informar um e-mail válido
-          E tocar no botão ""SALVAR""
-          Então o e-mail informado deverá ser exibido na tela de detalhes do contato
-        "
-"passed","Wed Jul 29 19:01:04 UTC 2026","Wed Jul 29 19:01:11 UTC 2026","6379","tests","test_4_delete_contact","TestDeleteContact","","","Verificar exibição e fechamento do menu de opções na tela de detalhes","
-        Verifica que o menu de opções é exibido e fechado corretamente.
-
-        Cenário: Usuário está na tela de detalhes do contato ""Ana Villalobos"".
-        Resultado esperado: Menu de opções é exibido e fechado ao tocar fora dele.
-        "
-"passed","Wed Jul 29 19:01:11 UTC 2026","Wed Jul 29 19:01:15 UTC 2026","4459","tests","test_4_delete_contact","TestDeleteContact","","","Excluir contato da tela de detalhes e verificar remoção","
+"passed","Wed Aug 26 21:17:56 UTC 2026","Wed Aug 26 21:18:31 UTC 2026","34665","tests","test_4_delete_contact","TestDeleteContact","","","Excluir contato da tela de detalhes e verificar remoção","
         Excluir um contato a partir da tela de detalhes do contato.
 
         Cenário: Usuário está na tela de detalhes do contato ""Ana Villalobos"".
         Resultado esperado: Contato é excluído e removido da lista de contatos.
         "
-"passed","Wed Jul 29 18:59:26 UTC 2026","Wed Jul 29 18:59:35 UTC 2026","8822","tests","test_3_update_contact","TestUpdateContact","","","Adicionar número de telefone a contato que possui apenas nome","
-        Adicionar número de telefone a um contato que possui apenas nome.
-
-        Cenário: Usuário abre o contato ""Maria"", adiciona um telefone e salva.
-        Resultado esperado: O telefone informado é exibido na tela de detalhes.
-        "
-"passed","Wed Jul 29 18:58:11 UTC 2026","Wed Jul 29 18:58:17 UTC 2026","5524","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de telefone exibe o texto correto","
-        Valida que a seleção dos tipos de telefone mostra o texto correto na tela,
+"passed","Wed Aug 26 21:13:18 UTC 2026","Wed Aug 26 21:13:22 UTC 2026","3444","tests","test_2_create_contact","TestCreateContact","","","Campo nome recebe foco automaticamente ao abrir tela de criação","
+        Valida que a seleção dos tipos de e-mail mostra o texto correto na tela,
         utilizando desvios condicionais para cada tipo.
         "
-"passed","Wed Jul 29 18:57:57 UTC 2026","Wed Jul 29 18:57:59 UTC 2026","2531","tests","test_2_create_contact","TestCreateContact","","","Validar placeholders da tela de criação de contato","
-        Valida os placeholders da tela de criação de contato.
+"passed","Wed Aug 26 21:15:15 UTC 2026","Wed Aug 26 21:15:23 UTC 2026","8279","tests","test_3_update_contact","TestUpdateContact","","","Alterar o sobrenome de um contato completo","
+        Alterar o sobrenome de um contato completo.
 
-        Cenário: Usuário acessa a tela de criação de contato.
-        Resultado esperado: Todos os placeholders são exibidos corretamente.
+        Cenário: Usuário altera o sobrenome do contato ""Ana Silva"" para ""Villalobos"".
+        Resultado esperado: O contato é exibido com o novo sobrenome na lista de contatos.
         "
-"passed","Wed Jul 29 18:59:42 UTC 2026","Wed Jul 29 18:59:52 UTC 2026","10056","tests","test_3_update_contact","TestUpdateContact","","","Adicionar nome a contato que possui apenas e-mail","
+"passed","Wed Aug 26 21:14:48 UTC 2026","Wed Aug 26 21:14:58 UTC 2026","9528","tests","test_3_update_contact","TestUpdateContact","","","Adicionar nome a contato que possui apenas e-mail","
         Adicionar nome a um contato que possui apenas e-mail.
 
         Cenário: Usuário abre o contato ""maria@gmail.com"" na lista, toca em editar,
                  preenche o campo ""Nome"" com um valor válido e salva.
         Resultado esperado: O contato passa a ser exibido pelo nome informado na lista de contatos.
         "
-"passed","Wed Jul 29 18:58:17 UTC 2026","Wed Jul 29 18:58:23 UTC 2026","6105","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de e-mail exibe o texto correto","
-        Valida que a seleção dos tipos de e-mail mostra o texto correto na tela,
-        utilizando desvios condicionais para cada tipo.
-        "
-"passed","Wed Jul 29 18:58:33 UTC 2026","Wed Jul 29 18:58:36 UTC 2026","2536","tests","test_2_create_contact","TestCreateContact","","","Campo nome recebe foco automaticamente ao abrir tela de criação","
-        Valida que a seleção dos tipos de e-mail mostra o texto correto na tela,
-        utilizando desvios condicionais para cada tipo.
-        "
-"passed","Wed Jul 29 18:58:45 UTC 2026","Wed Jul 29 18:58:53 UTC 2026","8113","tests","test_2_create_contact","TestCreateContact","","","Criar contato com dados parciais (parametrizado)","
-        Testa a criação de contato com dados parciais.
-
-        Cenários parametrizados:
-        - Apenas primeiro nome preenchido
-        - Apenas telefone preenchido
-        - Apenas email preenchido
-
-        Resultado esperado: Contato é criado com os dados fornecidos.
-        "
-"passed","Wed Jul 29 19:00:20 UTC 2026","Wed Jul 29 19:00:29 UTC 2026","9244","tests","test_3_update_contact","TestUpdateContact","","","Alterar o telefone de um contato completo","
-        Alterar o telefone de um contato completo.
-
-        Cenário: Usuário altera o telefone do contato ""Ana Villalobos"".
-        Resultado esperado: Novo telefone é exibido na tela de detalhes.
-        "
-"passed","Wed Jul 29 19:00:11 UTC 2026","Wed Jul 29 19:00:20 UTC 2026","8493","tests","test_3_update_contact","TestUpdateContact","","","Alterar o sobrenome de um contato completo","
-        Alterar o sobrenome de um contato completo.
-
-        Cenário: Usuário altera o sobrenome do contato ""Ana Silva"" para ""Villalobos"".
-        Resultado esperado: O contato é exibido com o novo sobrenome na lista de contatos.
-        "
-"passed","Wed Jul 29 18:58:05 UTC 2026","Wed Jul 29 18:58:11 UTC 2026","5994","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de telefone exibe o texto correto","
+"passed","Wed Aug 26 21:12:42 UTC 2026","Wed Aug 26 21:12:48 UTC 2026","5431","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de telefone exibe o texto correto","
         Valida que a seleção dos tipos de telefone mostra o texto correto na tela,
         utilizando desvios condicionais para cada tipo.
         "
-"passed","Wed Jul 29 19:00:03 UTC 2026","Wed Jul 29 19:00:11 UTC 2026","8645","tests","test_3_update_contact","TestUpdateContact","","","Alterar o nome de um contato completo","
+"passed","Wed Aug 26 21:12:49 UTC 2026","Wed Aug 26 21:12:54 UTC 2026","5329","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de telefone exibe o texto correto","
+        Valida que a seleção dos tipos de telefone mostra o texto correto na tela,
+        utilizando desvios condicionais para cada tipo.
+        "
+"passed","Wed Aug 26 21:12:56 UTC 2026","Wed Aug 26 21:13:02 UTC 2026","6883","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de e-mail exibe o texto correto","
+        Valida que a seleção dos tipos de e-mail mostra o texto correto na tela,
+        utilizando desvios condicionais para cada tipo.
+        "
+"passed","Wed Aug 26 21:11:57 UTC 2026","Wed Aug 26 21:12:09 UTC 2026","12543","tests","test_2_create_contact","TestCreateContact","","","Cancelar criação com diálogo de confirmação após preencher campo","
+        Testa o cancelamento da criação com diálogo de confirmação ao ter campos preenchidos.
+
+        Cenário: Usuário preenche o primeiro nome e tenta cancelar, acionando diálogo de confirmação.
+        Resultado esperado: Usuário pode confirmar o cancelamento e nenhum contato é criado.
+        "
+"passed","Wed Aug 26 21:14:31 UTC 2026","Wed Aug 26 21:14:38 UTC 2026","7598","tests","test_3_update_contact","TestUpdateContact","","","Adicionar número de telefone a contato que possui apenas nome","
+        Adicionar número de telefone a um contato que possui apenas nome.
+
+        Cenário: Usuário abre o contato ""Maria Oliveira"", edita, adiciona um telefone e salva.
+        Resultado esperado: O telefone informado é exibido na tela de detalhes.
+        "
+"passed","Wed Aug 26 21:16:01 UTC 2026","Wed Aug 26 21:16:16 UTC 2026","14955","tests","test_4_delete_contact","TestDeleteContact","","","Verificar atualização do contador ao selecionar e desselecionar contatos","
+        Verificar atualização do contador ao selecionar e desselecionar contatos.
+
+        Cenário: Usuário está no modo de seleção múltipla.
+        Resultado esperado: Contador exibe a quantidade correta de contatos selecionados.
+        "
+"passed","Wed Aug 26 21:15:33 UTC 2026","Wed Aug 26 21:15:46 UTC 2026","12611","tests","test_4_delete_contact","TestDeleteContact","","","Verificar que o ícone de lixeira não está visível sem seleção","
+        Verifica que o ícone de lixeira não está visível na barra de ação sem nenhum contato selecionado.
+
+        Cenário: Usuário está na tela de lista de contatos sem nenhum contato selecionado.
+        Resultado esperado: O ícone de lixeira não deve estar visível na barra de ação.
+        "
+"passed","Wed Aug 26 21:17:38 UTC 2026","Wed Aug 26 21:17:54 UTC 2026","15860","tests","test_4_delete_contact","TestDeleteContact","","","Verificar exibição e fechamento do menu de opções na tela de detalhes","
+        Verifica que o menu de opções é exibido e fechado corretamente.
+
+        Cenário: Usuário está na tela de detalhes do contato ""Ana Villalobos"".
+        Resultado esperado: Menu de opções é exibido e fechado ao tocar fora dele.
+        "
+"passed","Wed Aug 26 21:15:06 UTC 2026","Wed Aug 26 21:15:15 UTC 2026","8254","tests","test_3_update_contact","TestUpdateContact","","","Alterar o nome de um contato completo","
         Alterar o nome de um contato completo.
 
         Cenário:
@@ -188,9 +90,112 @@
           E tocar no botão ""SALVAR""
           Então o contato deverá ser exibido com o novo nome na lista de contatos
         "
-"passed","Wed Jul 29 19:00:47 UTC 2026","Wed Jul 29 19:00:54 UTC 2026","7671","tests","test_4_delete_contact","TestDeleteContact","","","Confirmar exclusão de contato e verificar remoção","
-        Testa a confirmação da exclusão de contato.
-
-        Cenário: Usuário clica no botão de criar contato e depois cancela sem preencher nenhum campo. - #Precisa ajustar
-        Resultado esperado: Retorna à tela inicial e nenhum contato é criado. - #Precisa ajustar
+"passed","Wed Aug 26 21:13:03 UTC 2026","Wed Aug 26 21:13:10 UTC 2026","6615","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de e-mail exibe o texto correto","
+        Valida que a seleção dos tipos de e-mail mostra o texto correto na tela,
+        utilizando desvios condicionais para cada tipo.
         "
+"passed","Wed Aug 26 21:15:23 UTC 2026","Wed Aug 26 21:15:32 UTC 2026","9185","tests","test_3_update_contact","TestUpdateContact","","","Alterar o telefone de um contato completo","
+        Alterar o telefone de um contato completo.
+
+        Cenário: Usuário altera o telefone do contato ""Ana Villalobos"".
+        Resultado esperado: Novo telefone é exibido na tela de detalhes.
+        "
+"passed","Wed Aug 26 21:16:56 UTC 2026","Wed Aug 26 21:17:21 UTC 2026","25108","tests","test_4_delete_contact","TestDeleteContact","","","Selecionar múltiplos contatos e excluir em lote","
+        Seleciona múltiplos contatos e exclui em lote.
+
+        Cenário: Usuário seleciona os contatos ""Maria Oliveira"" e ""Samuel Teste"".
+        Resultado esperado: Ambos são removidos da lista.
+        "
+"passed","Wed Aug 26 21:12:30 UTC 2026","Wed Aug 26 21:12:33 UTC 2026","3832","tests","test_2_create_contact","TestCreateContact","","","Validar placeholders da tela de criação de contato","
+        Valida os placeholders da tela de criação de contato.
+
+        Cenário: Usuário acessa a tela de criação de contato.
+        Resultado esperado: Todos os placeholders são exibidos corretamente.
+        "
+"passed","Wed Aug 26 21:11:38 UTC 2026","Wed Aug 26 21:11:57 UTC 2026","18306","tests","test_2_create_contact","TestCreateContact","","","Cancelar criação de contato com formulário vazio retorna à tela inicial","
+        Testa o cancelamento da criação de contato com formulário vazio.
+
+        Cenário: Usuário clica no botão de criar contato e depois cancela sem preencher nenhum campo.
+        Resultado esperado: Retorna à tela inicial e nenhum contato é criado.
+        "
+"passed","Wed Aug 26 21:16:31 UTC 2026","Wed Aug 26 21:16:56 UTC 2026","25041","tests","test_4_delete_contact","TestDeleteContact","","","Confirmar exclusão de contato e verificar remoção","
+        Confirma a exclusão de um contato selecionado.
+
+        Cenário: Usuário seleciona ""Maria Editada"", confirma a exclusão.
+        Resultado esperado: Contato é removido da lista.
+        "
+"passed","Wed Aug 26 21:14:58 UTC 2026","Wed Aug 26 21:15:06 UTC 2026","8837","tests","test_3_update_contact","TestUpdateContact","","","Adicionar nome a contato que possui apenas telefone","
+        Adicionar nome a um contato que possui apenas telefone.
+
+        Cenário: Usuário abre o contato '(897) 451-5216', edita, preenche o nome e salva.
+        Resultado esperado: O contato passa a ser exibido pelo nome informado na lista.
+        "
+"passed","Wed Aug 26 21:17:21 UTC 2026","Wed Aug 26 21:17:38 UTC 2026","16799","tests","test_4_delete_contact","TestDeleteContact","","","Excluir contato da tela de detalhes e cancelar a exclusão","
+        Excluir um contato a partir da tela de detalhes do contato e cancelar a exclusão.
+
+        Cenário: Usuário está na tela de detalhes do contato ""Ana Villalobos"".
+        Resultado esperado: Contato não é excluído e o usuário permanece na tela de detalhes.
+        "
+"passed","Wed Aug 26 21:14:22 UTC 2026","Wed Aug 26 21:14:31 UTC 2026","8541","tests","test_3_update_contact","TestUpdateContact","","","Adicionar sobrenome a contato que possui apenas nome","
+        Adicionar sobrenome a um contato que possui apenas nome.
+
+        Cenário: Usuário edita o contato ""Maria"" e adiciona o sobrenome ""Oliveira"".
+        Resultado esperado: O contato é exibido como ""Maria Oliveira"" na lista de contatos.
+        "
+"passed","Wed Aug 26 21:14:39 UTC 2026","Wed Aug 26 21:14:47 UTC 2026","7979","tests","test_3_update_contact","TestUpdateContact","","","Adicionar e-mail a contato que possui apenas nome","
+        Adicionar e-mail a um contato que possui apenas nome.
+
+        Cenário:
+          Dado que o usuário está no contato ""Maria""
+          Quando tocar em ""Editar""
+          E informar um e-mail válido
+          E tocar no botão ""SALVAR""
+          Então o e-mail informado deverá ser exibido na tela de detalhes do contato
+        "
+"passed","Wed Aug 26 21:13:53 UTC 2026","Wed Aug 26 21:14:09 UTC 2026","15840","tests","test_2_create_contact","TestCreateContact","","","Criar contato completo com todos os dados","
+        Testa a criação completa de contato com todos os campos preenchidos.
+
+        Cenário: Usuário preenche todos os campos (primeiro nome, sobrenome, telefone e email).
+        Resultado esperado: Contato é criado e validado com sucesso.
+        "
+"passed","Wed Aug 26 21:13:11 UTC 2026","Wed Aug 26 21:13:18 UTC 2026","6800","tests","test_2_create_contact","TestCreateContact","","","Selecionar tipo de e-mail exibe o texto correto","
+        Valida que a seleção dos tipos de e-mail mostra o texto correto na tela,
+        utilizando desvios condicionais para cada tipo.
+        "
+"passed","Wed Aug 26 21:13:34 UTC 2026","Wed Aug 26 21:13:41 UTC 2026","7605","tests","test_2_create_contact","TestCreateContact","","","Criar contato com dados parciais (parametrizado)","
+        Testa a criação de contato com dados parciais.
+
+        Cenários parametrizados:
+        - Apenas primeiro nome preenchido
+        - Apenas telefone preenchido
+        - Apenas email preenchido
+
+        Resultado esperado: Contato é criado com os dados fornecidos.
+        "
+"passed","Wed Aug 26 21:12:09 UTC 2026","Wed Aug 26 21:12:29 UTC 2026","20081","tests","test_2_create_contact","TestCreateContact","","","Tentar criar contato com formulário vazio resulta em falha","
+        Testa que a criação falha com formulário vazio.
+
+        Cenário: Usuário tenta criar contato sem preencher nenhum campo.
+        Resultado esperado: Falha na validação e nenhum contato é criado.
+        "
+"passed","Wed Aug 26 21:13:23 UTC 2026","Wed Aug 26 21:13:31 UTC 2026","7576","tests","test_2_create_contact","TestCreateContact","","","Criar contato com dados parciais (parametrizado)","
+        Testa a criação de contato com dados parciais.
+
+        Cenários parametrizados:
+        - Apenas primeiro nome preenchido
+        - Apenas telefone preenchido
+        - Apenas email preenchido
+
+        Resultado esperado: Contato é criado com os dados fornecidos.
+        "
+"passed","Wed Aug 26 21:13:44 UTC 2026","Wed Aug 26 21:13:51 UTC 2026","6809","tests","test_2_create_contact","TestCreateContact","","","Criar contato com dados parciais (parametrizado)","
+        Testa a criação de contato com dados parciais.
+
+        Cenários parametrizados:
+        - Apenas primeiro nome preenchido
+        - Apenas telefone preenchido
+        - Apenas email preenchido
+
+        Resultado esperado: Contato é criado com os dados fornecidos.
+        "
+"passed","Wed Aug 26 21:11:36 UTC 2026","Wed Aug 26 21:11:38 UTC 2026","2730","tests","test_1_home_empety","TestHomeContact","","","Tela inicial vazia - verificar elementos",""
