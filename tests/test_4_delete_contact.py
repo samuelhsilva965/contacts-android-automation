@@ -1,11 +1,65 @@
 import pytest
 import time
 import allure
+from selenium.common.exceptions import TimeoutException
 from pages.contact_detail_page import ContactDetailPage
+from pages.create_contact_pages import CreateContactPage
 from pages.home_pages import ContactsPage
 from pages.home_with_contact_page import HomeWithContactPage
 from utils.functions.click_and_holder import click_and_hold
-from utils.validations.validations_home_not_contact import ValidationHomeNotContact
+from utils.functions.ensure_on_home import ensure_on_contacts_home, return_to_contacts_home
+from utils.functions.ensure_required_contacts import (
+    contacts_for_delete,
+    ensure_required_contacts_for_delete,
+)
+
+
+def _ensure_delete_contacts(driver, home_page, home_with_contact, create_new_contact, *names: str):
+    """Garante apenas os contatos usados pelo cenário atual."""
+    with allure.step(f"Pré-condição: garantir contato(s) {', '.join(names)}"):
+        ensure_required_contacts_for_delete(
+            driver=driver,
+            home_page=home_page,
+            home_with_contact=home_with_contact,
+            create_new_contact=create_new_contact,
+            required_contacts=contacts_for_delete(*names),
+        )
+
+
+def _assert_contacts_absent(
+    driver,
+    home_page: ContactsPage,
+    home_with_contact: HomeWithContactPage,
+    names: list[str],
+    timeout: float = 10,
+):
+    """Aguarda a home e valida que os nomes não estão mais na lista."""
+    ensure_on_contacts_home(driver)
+    deadline = time.monotonic() + timeout
+    remaining_contacts: list[str] = []
+    while time.monotonic() < deadline:
+        if home_page.is_contacts_list_empty():
+            return
+        try:
+            remaining_contacts = home_with_contact.get_all_contact_names()
+        except TimeoutException:
+            return
+        still_present = [name for name in names if name in remaining_contacts]
+        if not still_present:
+            return
+        time.sleep(0.5)
+    still_present = [name for name in names if name in remaining_contacts]
+    assert not still_present, (
+        f"Contato(s) ainda presente(s): {still_present}. Lista atual: {remaining_contacts}"
+    )
+
+
+@pytest.fixture(autouse=True)
+def always_end_on_home(driver):
+    """Todo teste deste módulo deve terminar na home de Contatos."""
+    yield
+    with allure.step("Pós-condição: retornar à home de Contatos"):
+        return_to_contacts_home(driver)
 
 
 class TestDeleteContact:
@@ -14,28 +68,50 @@ class TestDeleteContact:
     @allure.story("Ícone de lixeira não visível sem seleção")
     @allure.title("Verificar que o ícone de lixeira não está visível sem seleção")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_delete_icon_not_visible_without_selection(self, driver, home_with_contact: HomeWithContactPage):
+    def test_delete_icon_not_visible_without_selection(
+        self,
+        driver,
+        home_page: ContactsPage,
+        home_with_contact: HomeWithContactPage,
+        create_new_contact: CreateContactPage,
+    ):
         """
         Verifica que o ícone de lixeira não está visível na barra de ação sem nenhum contato selecionado.
 
         Cenário: Usuário está na tela de lista de contatos sem nenhum contato selecionado.
         Resultado esperado: O ícone de lixeira não deve estar visível na barra de ação.
         """
-        with allure.step("Verificar que o ícone de lixeira não está visível sem nenhum contato selecionado"):
+        _ensure_delete_contacts(
+            driver, home_page, home_with_contact, create_new_contact, "Maria Editada"
+        )
+
+        with allure.step("Garantir home e verificar que o ícone de lixeira não está visível"):
+            ensure_on_contacts_home(driver)
             assert not home_with_contact.is_btn_delete_visible(), "O botão de exclusão está visível sem nenhum contato selecionado"
 
     @allure.feature("Excluir Contato")
     @allure.story("Desmarcar seleção e cancelar modo de seleção múltipla")
     @allure.title("Desmarcar seleção e cancelar modo de seleção múltipla")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_unselect_and_cancel_selection(self, driver, home_with_contact: HomeWithContactPage, home_page: ContactsPage):
+    def test_unselect_and_cancel_selection(
+        self,
+        driver,
+        home_with_contact: HomeWithContactPage,
+        home_page: ContactsPage,
+        create_new_contact: CreateContactPage,
+    ):
         """
         Desmarcar seleção e cancelar modo de seleção múltipla.
 
         Cenário: Usuário selecionou o contato "Maria Editada" na lista.
         Resultado esperado: Contato é desmarcado e modo de seleção múltipla é encerrado.
         """
-        with allure.step("Selecionar contato 'Maria Editada' e verificar seleção"):
+        _ensure_delete_contacts(
+            driver, home_page, home_with_contact, create_new_contact, "Maria Editada"
+        )
+
+        with allure.step("Garantir home, selecionar contato 'Maria Editada' e verificar seleção"):
+            ensure_on_contacts_home(driver)
             element = home_with_contact.get_contact_row_by_name("Maria Editada")
             click_and_hold(driver, element, duration=2000)
             assert home_with_contact.is_checkbox_selected_by_name("Maria Editada"), "O checkbox do contato 'Maria Editada' não está selecionado"
@@ -55,14 +131,30 @@ class TestDeleteContact:
     @allure.story("Atualizar contador de seleção")
     @allure.title("Verificar atualização do contador ao selecionar e desselecionar contatos")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_update_selection_count(self, driver, home_with_contact: HomeWithContactPage):
+    def test_update_selection_count(
+        self,
+        driver,
+        home_page: ContactsPage,
+        home_with_contact: HomeWithContactPage,
+        create_new_contact: CreateContactPage,
+    ):
         """
         Verificar atualização do contador ao selecionar e desselecionar contatos.
 
         Cenário: Usuário está no modo de seleção múltipla.
         Resultado esperado: Contador exibe a quantidade correta de contatos selecionados.
         """
-        with allure.step("Selecionar contato 'Maria Oliveira' e verificar contador"):
+        _ensure_delete_contacts(
+            driver,
+            home_page,
+            home_with_contact,
+            create_new_contact,
+            "Maria Oliveira",
+            "Samuel Teste",
+        )
+
+        with allure.step("Garantir home, selecionar contato 'Maria Oliveira' e verificar contador"):
+            ensure_on_contacts_home(driver)
             element = home_with_contact.get_contact_row_by_name("Maria Oliveira")
             click_and_hold(driver, element, duration=2000)
             selection_count = home_with_contact.get_selection_count_value()
@@ -83,9 +175,25 @@ class TestDeleteContact:
     @allure.story("Cancelar exclusão de contato")
     @allure.title("Cancelar exclusão de contato e verificar que não foi removido")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_cancel_delete_contact(self, driver, home_with_contact: HomeWithContactPage):
-       
-        with allure.step("Selecionar contato 'Maria Editada'"):
+    def test_cancel_delete_contact(
+        self,
+        driver,
+        home_page: ContactsPage,
+        home_with_contact: HomeWithContactPage,
+        create_new_contact: CreateContactPage,
+    ):
+        """
+        Cancelar a exclusão de um contato selecionado.
+
+        Cenário: Usuário seleciona "Maria Editada", abre o diálogo de exclusão e cancela.
+        Resultado esperado: Contato permanece na lista e a seleção é mantida.
+        """
+        _ensure_delete_contacts(
+            driver, home_page, home_with_contact, create_new_contact, "Maria Editada"
+        )
+
+        with allure.step("Garantir home e selecionar contato 'Maria Editada'"):
+            ensure_on_contacts_home(driver)
             element = home_with_contact.get_contact_row_by_name("Maria Editada")
             click_and_hold(driver, element, duration=2000)
 
@@ -105,18 +213,30 @@ class TestDeleteContact:
     @allure.story("Confirmar exclusão de contato")
     @allure.title("Confirmar exclusão de contato e verificar remoção")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_confirm_delete_contact(self, driver, home_page: ContactsPage, home_with_contact: HomeWithContactPage):
+    def test_confirm_delete_contact(
+        self,
+        driver,
+        home_page: ContactsPage,
+        home_with_contact: HomeWithContactPage,
+        create_new_contact: CreateContactPage,
+    ):
         """
-        Testa a confirmação da exclusão de contato.
+        Confirma a exclusão de um contato selecionado.
 
-        Cenário: Usuário clica no botão de criar contato e depois cancela sem preencher nenhum campo. - #Precisa ajustar
-        Resultado esperado: Retorna à tela inicial e nenhum contato é criado. - #Precisa ajustar
+        Cenário: Usuário seleciona "Maria Editada", confirma a exclusão.
+        Resultado esperado: Contato é removido da lista.
         """
-        with allure.step("Selecionar contato 'Maria Editada' e verificar botão de exclusão"):
+        _ensure_delete_contacts(
+            driver, home_page, home_with_contact, create_new_contact, "Maria Editada"
+        )
+
+        with allure.step("Garantir home, selecionar contato 'Maria Editada' e verificar botão de exclusão"):
+            ensure_on_contacts_home(driver)
             element = home_with_contact.get_contact_row_by_name("Maria Editada")
             click_and_hold(driver, element, duration=2000)
             assert home_with_contact.get_btn_delete(), "Botão de exclusão não está visível após o clique longo."
             assert home_with_contact.get_selection_count_value() == '1'
+
         with allure.step("Clicar no ícone de lixeira"):
             home_with_contact.click_btn_delete()
 
@@ -126,62 +246,80 @@ class TestDeleteContact:
 
         with allure.step("Confirmar a exclusão e verificar remoção"):
             home_with_contact.click_btn_confirm_delete_dialog()
-            remaining_contacts = home_with_contact.get_all_contact_names()
-            time.sleep(3)
-            for name in ["Maria Editada"]:
-                assert name not in remaining_contacts, f"Contato '{name}' ainda está presente na lista: {remaining_contacts}"
+            _assert_contacts_absent(driver, home_page, home_with_contact, ["Maria Editada"])
 
     @allure.feature("Excluir Contato")
     @allure.story("Selecionar e excluir múltiplos contatos em lote")
     @allure.title("Selecionar múltiplos contatos e excluir em lote")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_select_and_delete_contacts(self, driver, home_with_contact: HomeWithContactPage):
+    def test_select_and_delete_contacts(
+        self,
+        driver,
+        home_page: ContactsPage,
+        home_with_contact: HomeWithContactPage,
+        create_new_contact: CreateContactPage,
+    ):
         """
         Seleciona múltiplos contatos e exclui em lote.
 
         Cenário: Usuário seleciona os contatos "Maria Oliveira" e "Samuel Teste".
-        Resultado esperado: Contato é criado e validado com sucesso.
+        Resultado esperado: Ambos são removidos da lista.
         """
-        with allure.step("Selecionar contato 'Maria Oliveira' e verificar botão de exclusão"):
+        _ensure_delete_contacts(
+            driver,
+            home_page,
+            home_with_contact,
+            create_new_contact,
+            "Maria Oliveira",
+            "Samuel Teste",
+        )
+
+        with allure.step("Garantir home, selecionar contato 'Maria Oliveira' e verificar botão de exclusão"):
+            ensure_on_contacts_home(driver)
             element = home_with_contact.get_contact_row_by_name("Maria Oliveira")
             click_and_hold(driver, element, duration=2000)
             assert home_with_contact.get_btn_delete(), "Botão de exclusão não está visível após o clique longo."
             home_with_contact.select_contacts(["Samuel Teste"])
+
         with allure.step("Verificar contador de seleção"):
             selection_count = home_with_contact.get_selection_count_value()
             assert selection_count == "2", f"Esperado '2' mas obteve '{selection_count}'"
+
         with allure.step("Clicar no ícone de lixeira e verificar mensagem de confirmação"):
             home_with_contact.click_btn_delete()
             confirmation_message = home_with_contact.get_text_delete_confirmation_message().text
             assert "Excluir contatos selecionados?" in confirmation_message, f"Mensagem de confirmação incorreta: {confirmation_message}"
+
         with allure.step("Confirmar exclusão e verificar remoção dos contatos"):
             home_with_contact.click_btn_confirm_delete_dialog()
-
-            for name in ["Maria Oliveira", "Samuel Teste"]:
-                tentativa = 0
-                remaining_contacts = home_with_contact.get_all_contact_names()
-                while name in remaining_contacts and tentativa < 3:
-                    time.sleep(3)
-                    remaining_contacts = home_with_contact.get_all_contact_names()
-                    tentativa += 1
-                if name in remaining_contacts:
-                    home_with_contact.click_contact_row_by_name("Ana Villalobos")
-                    driver.back()
-                    remaining_contacts = home_with_contact.get_all_contact_names()
-                assert name not in remaining_contacts, f"Contato '{name}' ainda está presente na lista: {remaining_contacts}"
+            _assert_contacts_absent(
+                driver, home_page, home_with_contact, ["Maria Oliveira", "Samuel Teste"]
+            )
 
     @allure.feature("Excluir Contato")
     @allure.story("Excluir contato da tela de detalhes com cancelamento")
     @allure.title("Excluir contato da tela de detalhes e cancelar a exclusão")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_delete_contact_from_detail_cancel(self, driver, home_with_contact: HomeWithContactPage, new_contact_detail: ContactDetailPage):
+    def test_delete_contact_from_detail_cancel(
+        self,
+        driver,
+        home_page: ContactsPage,
+        home_with_contact: HomeWithContactPage,
+        create_new_contact: CreateContactPage,
+        new_contact_detail: ContactDetailPage,
+    ):
         """
         Excluir um contato a partir da tela de detalhes do contato e cancelar a exclusão.
 
         Cenário: Usuário está na tela de detalhes do contato "Ana Villalobos".
         Resultado esperado: Contato não é excluído e o usuário permanece na tela de detalhes.
         """
-        with allure.step("Navegar para a tela de detalhes do contato 'Ana Villalobos'"):
+        _ensure_delete_contacts(
+            driver, home_page, home_with_contact, create_new_contact, "Ana Villalobos"
+        )
+
+        with allure.step("Garantir home e navegar para a tela de detalhes do contato 'Ana Villalobos'"):
+            ensure_on_contacts_home(driver)
             home_with_contact.click_contact_row_by_name("Ana Villalobos")
             assert new_contact_detail.get_text_contact_name().text == "Ana Villalobos", "O nome do contato não é 'Ana Villalobos'"
 
@@ -198,7 +336,10 @@ class TestDeleteContact:
             new_contact_detail.click_btn_cancelar_dialog()
 
         with allure.step("Voltar para listagem e verificar que contato não foi removido"):
-            driver.back()
+            assert new_contact_detail.get_text_contact_name().text == "Ana Villalobos", (
+                "Após cancelar, deveria permanecer na tela de detalhes"
+            )
+            return_to_contacts_home(driver)
             remaining_contacts = home_with_contact.get_all_contact_names()
             assert "Ana Villalobos" in remaining_contacts, f"Contato 'Ana Villalobos' foi removido"
 
@@ -206,14 +347,26 @@ class TestDeleteContact:
     @allure.story("Menu de opções na tela de detalhes")
     @allure.title("Verificar exibição e fechamento do menu de opções na tela de detalhes")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_contact_detail_menu(self, driver, home_with_contact: HomeWithContactPage, new_contact_detail: ContactDetailPage):
+    def test_contact_detail_menu(
+        self,
+        driver,
+        home_page: ContactsPage,
+        home_with_contact: HomeWithContactPage,
+        create_new_contact: CreateContactPage,
+        new_contact_detail: ContactDetailPage,
+    ):
         """
         Verifica que o menu de opções é exibido e fechado corretamente.
 
         Cenário: Usuário está na tela de detalhes do contato "Ana Villalobos".
         Resultado esperado: Menu de opções é exibido e fechado ao tocar fora dele.
         """
-        with allure.step("Navegar para a tela de detalhes do contato 'Ana Villalobos'"):
+        _ensure_delete_contacts(
+            driver, home_page, home_with_contact, create_new_contact, "Ana Villalobos"
+        )
+
+        with allure.step("Garantir home e navegar para a tela de detalhes do contato 'Ana Villalobos'"):
+            ensure_on_contacts_home(driver)
             home_with_contact.click_contact_row_by_name("Ana Villalobos")
             assert new_contact_detail.get_text_contact_name().text == "Ana Villalobos", "O nome do contato não é 'Ana Villalobos'"
 
@@ -228,21 +381,30 @@ class TestDeleteContact:
             assert not new_contact_detail.is_option_visible("Excluir", 2), "O menu não foi fechado ao tocar fora dele"
             assert new_contact_detail.get_text_contact_name().text == "Ana Villalobos", "O usuário saiu da tela de detalhes do contato"
 
-        with allure.step("Voltar para a tela de listagem de contatos"):
-            driver.back()
-
     @allure.feature("Excluir Contato")
     @allure.story("Excluir contato da tela de detalhes com confirmação")
     @allure.title("Excluir contato da tela de detalhes e verificar remoção")
     @allure.severity(allure.severity_level.NORMAL)
-    def test_delete_contact_from_detail(self, driver, home_with_contact: HomeWithContactPage, new_contact_detail: ContactDetailPage, validator_home_empty: ValidationHomeNotContact):
+    def test_delete_contact_from_detail(
+        self,
+        driver,
+        home_page: ContactsPage,
+        home_with_contact: HomeWithContactPage,
+        create_new_contact: CreateContactPage,
+        new_contact_detail: ContactDetailPage,
+    ):
         """
         Excluir um contato a partir da tela de detalhes do contato.
 
         Cenário: Usuário está na tela de detalhes do contato "Ana Villalobos".
         Resultado esperado: Contato é excluído e removido da lista de contatos.
         """
-        with allure.step("Navegar para a tela de detalhes do contato 'Ana Villalobos'"):
+        _ensure_delete_contacts(
+            driver, home_page, home_with_contact, create_new_contact, "Ana Villalobos"
+        )
+
+        with allure.step("Garantir home e navegar para a tela de detalhes do contato 'Ana Villalobos'"):
+            ensure_on_contacts_home(driver)
             home_with_contact.click_contact_row_by_name("Ana Villalobos")
             assert new_contact_detail.get_text_contact_name().text == "Ana Villalobos", "O nome do contato não é 'Ana Villalobos'"
 
@@ -258,5 +420,5 @@ class TestDeleteContact:
             assert "Excluir este contato?" in confirmation_message, f"Mensagem de confirmação incorreta: {confirmation_message}"
             new_contact_detail.click_btn_excluir_dialog()
 
-        #with allure.step("Verificar que a home está vazia (sem contatos)"):
-            #validator_home_empty.validate_home_not_contact() -> Por algum motivo a home sem contatos as vezes muda, não foi possível identificar um padrão, então comentei essa validação, mas a exclusão do contato funciona normalmente.
+        with allure.step("Verificar que o contato foi removido da lista"):
+            _assert_contacts_absent(driver, home_page, home_with_contact, ["Ana Villalobos"])
